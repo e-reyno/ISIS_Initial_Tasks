@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 
 def read_file(filename):
-    
+
     data = pd.read_csv(filename)
     return data
 
@@ -32,13 +32,9 @@ density_materials = np.array([density_lead, density_concrete, density_iron])
 #convert to half value thicknesses
 material_values.loc[:,("Lead","Concrete", "Iron")] = convert_hvl(material_values.loc[:,("Lead","Concrete", "Iron")], density_materials)
 
-
-
 number_photons = 1e3
 
-#multiply thicknesses for number of photons?
-
+#plot the hvl
 material_values.plot(kind='scatter',x='Energy', y='Lead')
 material_values.plot(kind='scatter',x='Energy', y='Concrete')
 material_values.plot(kind='scatter',x='Energy', y='Iron')
-
