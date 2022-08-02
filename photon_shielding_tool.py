@@ -70,9 +70,31 @@ def plot_material_hvl(material_data):
     return None
 
 
+def find_dose_reduction(initial_dose, final_dose):
+    
+    return initial_dose / final_dose
+
+
+def find_number_required_hvl(initial_dose, final_dose):
+    return (np.log(final_dose) - np.log(initial_dose)) / np.log(0.5)
+
+
+def find_required_hvl(energy, material_hvl, initial_dose, final_dose):
+    
+    i = find_energy_index(energy, material_hvl.loc[:, "Energy"])
+    number_hvl = find_number_required_hvl(initial_dose, final_dose)
+    hvl_array = np.array([material_hvl.loc[i,"Lead"], material_hvl.loc[i,"Concrete"], material_hvl.loc[i, "Iron"] ])
+    hvl_required = np.rint(number_hvl * hvl_array)
+    return hvl_required
+
+
 density_lead = 11.29  # gram/cm3
 density_iron = 7.874  # gram/c3
 density_concrete = 2.4  # gram/cm3
+
+photon_energy = 2.4  # MeV
+final_dose_rate = 0.0001
+initial_dose_rate =  0.1
 
 material_values = read_file("material_values.csv")
 
@@ -80,19 +102,13 @@ density_materials = np.array([density_lead, density_concrete, density_iron])
 # convert to half value thicknesses
 material_values.loc[:, ("Lead", "Concrete", "Iron")] = convert_hvl(material_values.loc[:, ("Lead", "Concrete", "Iron")],
                                                                    density_materials)
+dose_reduction_factor = find_dose_reduction(initial_dose_rate, final_dose_rate)
+hvl_required = find_required_hvl(photon_energy, material_values, initial_dose_rate, final_dose_rate)
+print("The number of half life thicknesses to  reduce the dose rate by a factor of " , 
+      dose_reduction_factor , " is " , hvl_required ," for lead, concrete and iron respectively.")
 
 plot_material_hvl(material_values)
 
-# energy
-photon_energy = 2.4  # MeV
-# rate_photons = 100 per minute - useless variable currently
-# number photons = 1e4 - useless variable currently
 
-i = find_energy_index(photon_energy, material_values.loc[:, "Energy"])
-lead_half_thickness = material_values.loc[i, ("Lead")]
-concrete_half_thickness = material_values.loc[i, "Concrete"]
-iron_half_thickness = material_values.loc[i, "Iron"]
 
-print("For a photon energy of", photon_energy, ": lead, concrete and steel"
-      " require half-value thicknesses of {0:0.4f} {1:0.4f}, {2:0.4f}.".format(lead_half_thickness,
-                                                                          concrete_half_thickness, iron_half_thickness))
+
