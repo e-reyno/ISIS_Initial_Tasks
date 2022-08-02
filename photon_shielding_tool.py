@@ -87,27 +87,31 @@ def find_required_hvl(energy, material_hvl, initial_dose, final_dose):
     hvl_required = np.rint(number_hvl * hvl_array)
     return hvl_required
 
+def main():
+    density_lead = 11.29  # gram/cm3
+    density_iron = 7.874  # gram/c3
+    density_concrete = 2.4  # gram/cm3
 
-density_lead = 11.29  # gram/cm3
-density_iron = 7.874  # gram/c3
-density_concrete = 2.4  # gram/cm3
+    photon_energy = 2.4  # MeV
+    final_dose_rate = 0.0001
+    initial_dose_rate =  0.1
 
-photon_energy = 2.4  # MeV
-final_dose_rate = 0.0001
-initial_dose_rate =  0.1
+    material_values = read_file("material_values.csv")
 
-material_values = read_file("material_values.csv")
+    density_materials = np.array([density_lead, density_concrete, density_iron])
+    # convert to half value thicknesses
+    material_values.loc[:, ("Lead", "Concrete", "Iron")] = convert_hvl(material_values.loc[:, ("Lead", "Concrete", "Iron")],
+                                                                       density_materials)
+    dose_reduction_factor = find_dose_reduction(initial_dose_rate, final_dose_rate)
+    hvl_required = find_required_hvl(photon_energy, material_values, initial_dose_rate, final_dose_rate)
+    print("The number of half life thicknesses to  reduce the dose rate by a factor of " , 
+          dose_reduction_factor , " is " , hvl_required ," for lead, concrete and iron respectively.")
 
-density_materials = np.array([density_lead, density_concrete, density_iron])
-# convert to half value thicknesses
-material_values.loc[:, ("Lead", "Concrete", "Iron")] = convert_hvl(material_values.loc[:, ("Lead", "Concrete", "Iron")],
-                                                                   density_materials)
-dose_reduction_factor = find_dose_reduction(initial_dose_rate, final_dose_rate)
-hvl_required = find_required_hvl(photon_energy, material_values, initial_dose_rate, final_dose_rate)
-print("The number of half life thicknesses to  reduce the dose rate by a factor of " , 
-      dose_reduction_factor , " is " , hvl_required ," for lead, concrete and iron respectively.")
+    plot_material_hvl(material_values)
+    
 
-plot_material_hvl(material_values)
+if __name__ == "__main__":
+    main()
 
 
 
