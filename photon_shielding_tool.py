@@ -61,6 +61,15 @@ def find_energy_index(energy_required, data):
     return index
 
 
+def plot_material_hvl(material_data):
+    
+    material_data.plot(kind='scatter', x='Energy', y='Lead')
+    material_data.plot(kind='scatter', x='Energy', y='Concrete')
+    material_data.plot(kind='scatter', x='Energy', y='Iron')
+    
+    return None
+
+
 density_lead = 11.29  # gram/cm3
 density_iron = 7.874  # gram/c3
 density_concrete = 2.4  # gram/cm3
@@ -72,10 +81,7 @@ density_materials = np.array([density_lead, density_concrete, density_iron])
 material_values.loc[:, ("Lead", "Concrete", "Iron")] = convert_hvl(material_values.loc[:, ("Lead", "Concrete", "Iron")],
                                                                    density_materials)
 
-# plot the hvl
-material_values.plot(kind='scatter', x='Energy', y='Lead')
-material_values.plot(kind='scatter', x='Energy', y='Concrete')
-material_values.plot(kind='scatter', x='Energy', y='Iron')
+plot_material_hvl(material_values)
 
 # energy
 photon_energy = 2.4  # MeV
