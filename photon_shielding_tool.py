@@ -79,13 +79,14 @@ material_values.plot(kind='scatter', x='Energy', y='Iron')
 
 # energy
 photon_energy = 2.4  # MeV
-rate_photons = 100  # per minute
+# rate_photons = 100 per minute - useless variable currently
+# number photons = 1e4 - useless variable currently
 
 i = find_energy_index(photon_energy, material_values.loc[:, "Energy"])
 lead_half_thickness = material_values.loc[i, ("Lead")]
 concrete_half_thickness = material_values.loc[i, "Concrete"]
 iron_half_thickness = material_values.loc[i, "Iron"]
 
-print("For a photon energy of", photon_energy, ", a half-value thickness required for"
-      " lead, concrete and steel are {0:0.4f} {1:0.4f}, {2:0.4f}.".format(lead_half_thickness,
+print("For a photon energy of", photon_energy, ": lead, concrete and steel"
+      " require half-value thicknesses of {0:0.4f} {1:0.4f}, {2:0.4f}.".format(lead_half_thickness,
                                                                           concrete_half_thickness, iron_half_thickness))
