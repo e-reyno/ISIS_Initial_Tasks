@@ -57,7 +57,7 @@ def find_energy_index(energy_required, data):
     index : integer
     index in dataframe matching energy above the required
     """
-    index  = (data>energy_required).idxmax()
+    index  = (data > energy_required).idxmax()
     return index
 
 
@@ -69,7 +69,7 @@ material_values = read_file("material_values.csv")
 
 density_materials = np.array([density_lead, density_concrete, density_iron])
 # convert to half value thicknesses
-material_values.loc[:,("Lead", "Concrete", "Iron")] = convert_hvl(material_values.loc[:, ("Lead", "Concrete", "Iron")],
+material_values.loc[:, ("Lead", "Concrete", "Iron")] = convert_hvl(material_values.loc[:, ("Lead", "Concrete", "Iron")],
                                                                   density_materials)
 
 # plot the hvl
@@ -88,4 +88,4 @@ iron_half_thickness = material_values.loc[i, "Iron"]
 
 print("For a photon energy of", photon_energy, ", a half-value thickness required for"
       " lead, concrete and steel are {0:0.4f} {1:0.4f}, {2:0.4f}.".format(lead_half_thickness,
-        concrete_half_thickness, iron_half_thickness))
+                                                                          concrete_half_thickness, iron_half_thickness))
